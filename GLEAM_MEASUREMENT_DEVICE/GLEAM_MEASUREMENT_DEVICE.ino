@@ -110,7 +110,7 @@ float AnalogSensorData;                                 // Analog sensor data
 String AnalogSensorBeingUsed = "GUVA-S12SD";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
 
 // GENERAL I2C SENSOR VARIABLES
-String I2CSensorBeingUsed = "AS7262";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
+String I2CSensorBeingUsed = "VEML7700";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
 
 // VEML6070 SENSOR VARIABLES
 float VEML6070Data;                                     
