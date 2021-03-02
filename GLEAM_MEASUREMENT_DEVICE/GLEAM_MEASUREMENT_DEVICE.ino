@@ -10,7 +10,7 @@
  * the data to an SD card, and send data to the Ground Unit Reciever (GUR) once a request is    |
  * detected from the Ground Unit Transmitter (GUT).                                             |
  ----------------------------------------------------------------------------------------------*/
-
+ 
 // SENSORs, SD, and I2C LIBRARIES
 #include <Wire.h>                                       // I2C  library                    - Should already be on your computer as a part of the IDE download
 #include <SPI.h>                                        // SPI  library                    - Should already be on your computer as a part of the IDE download
@@ -148,14 +148,35 @@ float displayTimer = 0;                                 // Variable used in allo
 // LED VARIABLES
 int ledsONorOFF = 1;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
 
-// SETUP FUNCTION
+// SETUP FUNCTIONS
 void startupProcedure();                                // Startup function which carries out the setup of the Serials, OLED, LEDs, and Sensors
-                                         // Setup function for SD card
+void OLEDSetup();                                       // Setup function for OLED
+void IMUSetup();                                        // Setup function for IMU
+void I2CSensorSetup(String I2Ssensor);                  // Setup function for your respective I2C sensor
+void SDSetup();                                         // Setup function for SD card
+
+// UPDATE FUNCTIONS
+void updateIMU();                                       // Update function for IMU
+void updateThermistor();                                // Update function for thermistor
+void updatePhotoresistor();                             // Update function for photoresistor
+void updateAnalogSensor();                              // Update function for your respective Analog sensor
+void updateI2CSensor(String I2CSensor);                 // Update function for your respective I2C sensor
+void updateDataStrings(String I2CSensor);               // Update function for data string that will be sent via xBee and to the SD
+void updateSD();                                        // Update function for SD (logging data to SD card)
+void updateXBee(String text);                           // Update function for xBee (sending xBeeData string over xBee when data request is received)
+void updateOLED(String text);                           // Update function for OLED
+
 // EXTRA USER FUNCTIONS
 void getHeader(String I2CSensor, String AnalogSensor);  // Functioon that sets up head based on the Analog and I2C sensors being used
-void updateDataStrings(String I2CSensor);
 void updateTimer();                                     // Sets the 'timer' variable
+void getDisplay();                                      // Allows user to switch what is displayed on OLED by pushing a button
+void blinkLED(int x);                                   // Function that blinks LED(x) once -> x = 1 for LED1 or x = 2 for LED2
+void blinkLEDs(int x);                                  // Function that blinks both LEDs 'x' number of times -> x = 2 for two blinks
 
+// ADDITIONAL FUNCITON OF IMU
+void updateRoll();                                      // Updates 'roll' variable
+void updatePitch();                                     // Updates 'pitch' variable
+void updateHeading();                                   // Updates 'heading' variable
 
 void setup() {      
                                   
@@ -181,6 +202,8 @@ void loop() {
 }
 
 
+
+/////////////////// SETUP FUNCTION DEFINITIONS ///////////////////
 void startupProcedure() {
   int delayTime = 250;
   pinMode(LED1, OUTPUT);
@@ -245,41 +268,179 @@ void startupProcedure() {
   setUpTime = millis();
 }
 
+void OLEDSetup() {
+  Wire.begin();
+  oled.begin();
+  oled.clear(ALL);
+  oled.display();
+  oled.clear(PAGE);
+  randomSeed(analogRead(A0) + analogRead(A1));
+  delay(250);
+  updateOLED("OLED\nonline!");
+}
 
+void IMUSetup() {
+  Wire.begin();
+  if(!imu.begin()) {
+    Serial.println("Failed to communicate with IMU.");
+    delay(500);
+  }
 
-void getHeader(String I2CSensor, String AnalogSensor) {
+  else{
+    updateOLED("IMU\nonline!");
+    delay(500);
+  }
+}
+
+void I2CSensorSetup(String I2CSensor) {
   
-  header = "Unit, Time, MagX, MagY, MagZ, AccelX, AccelY, AccelZ, GyroX, GyroY, GyroZ, TempF, TempC, Photo, " + AnalogSensor + spacer;
-  xBeeHeader = String(Unit) + spacer +  "Time, TempF, TempC, Photo, " + AnalogSensor + spacer;
-  
-  if(I2CSensor == "VEML6070") {
-    header = header + String("VEML6070");
-    xBeeHeader = xBeeHeader + String("VEML6070") + delimiter;
+  if (I2CSensor == "VEML6070") {
+    veml6070.begin(VEML6070_1_T);
   }
 
-  else if(I2CSensor == "VEML7700") {
-    header = header + String("Lux") + spacer + String("White") + String ("RawALS");
-    xBeeHeader = xBeeHeader + String("Lux") + spacer + String("White") + spacer + String ("RawALS") + delimiter;
+  else if (I2CSensor == "VEML7700") {
+    veml7700.begin();
+    veml7700.setGain(VEML7700_GAIN_1);
+    veml7700.setIntegrationTime(VEML7700_IT_800MS);
+    veml7700.setLowThreshold(10000);
+    veml7700.setHighThreshold(20000);
+    veml7700.interruptEnable(true);
   }
 
-  else if(I2CSensor == "AS7262") {
-    header = header + String("Temperature") + spacer + String("Violet") + spacer + String("Blue") + spacer + String("Green") + spacer + String("Yellow") + spacer + String("Orange") + spacer + String("Red");
-    xBeeHeader = xBeeHeader + String("Temperature") + spacer + String("Violet") + spacer + String("Blue") + spacer + String("Green") + spacer + String("Yellow") + spacer + String("Orange") + spacer + String("Red") + delimiter;
+  else if (I2CSensor == "AS7262") {
+    AS.begin();
   }
 
-  else if(I2CSensor == "SI1145") {
-    header = header + String("Visible") + spacer + String("IR") + spacer + String("UV");
-    xBeeHeader = xBeeHeader + String("Visible") + spacer + String("IR") + spacer + String("UV") + delimiter;
+  else if (I2CSensor == "SI1145") {
+    SI.begin();
   }
 
   else {
-    Serial.println("Error - (in getHeader()): Please change the variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
+    Serial.println("Error - (in I2CSensorSetup()): Please change the variable 'I2CSensorBeingUsed' to one of the four I2C sensor options and reset system!");
     Serial.println("Exiting program!");
-    while(1==1) {}
+    updateOLED("Error!\n\nExiting\nprogram!");
+    while(1) {}   
+  }
+}
+
+void SDSetup(){
+  pinMode(chipSelect, OUTPUT);
+  if(!SD.begin(chipSelect)) {
+    Serial.println("SD card failed, or not present");
+    updateOLED("SD Card\nfailed\nor\nnot\npresent");
+    delay(1000); 
+  }
+  else {
+    Serial.print("        card initialized! \nCreating File...             ");
+    for (byte i = 0; i<100; i++) {
+      filename[3] = '0' + i/10;
+      filename[4] = '0' + i%10;
+      if(!SD.exists(filename)) {
+        datalog = SD.open(filename, FILE_WRITE);
+        sdActive = true;
+        Serial.println("complete!");
+        Serial.println("Logging to: " + String(filename));
+        updateOLED("SD\nonline!");
+        delay(500);
+        updateOLED("Logging:\n\n" + String(filename));
+        delay(500);
+        break;}
+      }
+
+      if(!sdActive) {
+        Serial.println("No available file names; clear SD card to enable logging");
+        updateOLED("Clear SD!");
+        delay(500);
+    }
   }
 }
 
 
+
+/////////////////// UPDATE FUNCTION DEFINITIONS ///////////////////
+void updateIMU() {
+
+  if (imu.magAvailable()) imu.readMag();
+  if (imu.accelAvailable()) imu.readAccel();
+  if (imu.gyroAvailable()) imu.readGyro();
+
+  magnetometer[0] = imu.calcMag(imu.mx);
+  magnetometer[1] = imu.calcMag(imu.my);
+  magnetometer[2] = imu.calcMag(imu.mz);
+  accelerometer[0] = imu.calcAccel(imu.ax);
+  accelerometer[1] = imu.calcAccel(imu.ay);
+  accelerometer[2] = imu.calcAccel(imu.az);
+  gyroscope[0] = imu.calcGyro(imu.gx);
+  gyroscope[1] = imu.calcGyro(imu.gy);
+  gyroscope[2] = imu.calcGyro(imu.gz);
+
+  updateRoll();
+  updatePitch();
+  updateHeading();
+}
+
+void updateThermistor() {
+  analogReadResolution(analogResolutionBits);
+  ThermistorData = analogRead(THERM);
+  logR = log(((adcMax/ThermistorData)-1)*R1);
+  Tinv = A + B * logR + C * logR * logR * logR;         // Steinhart - Hart equation
+  T = 1/Tinv;
+  currentTempC = T - 273.15;
+  currentTempF = currentTempC * 9 / 5 + 32;
+}
+
+void updatePhotoresistor() {
+  PhotoresistorData = analogRead(PHOTO);                // May need proper formula to get useful values -- otherwise will just see varying analog values
+}
+
+void updateAnalogSensor() {
+  AnalogSensorData = analogRead(ANALOGSENSOR);          // May need proper formula to get useful values -- otherwise will just see varying analog values
+}
+
+void updateI2CSensor(String I2CSensor) {
+
+  if (I2CSensor == "VEML6070") {
+    VEML6070Data = veml6070.readUV();
+  }
+
+  else if (I2CSensor == "VEML7700") {
+    VEML7700Lux = veml7700.readLux();
+    VEML7700White = veml7700.readWhite();
+    VEML7700RawALS = veml7700.readALS(); 
+  }
+
+  else if (I2CSensor == "AS7262") {
+    AS7262STemperature = AS.readTemperature();
+    AS.startMeasurement();
+    bool ready = false;
+    while(!ready){
+      delay(5);
+      ready = AS.dataReady();
+    }
+
+    AS.readRawValues(AS7262SensorValues);
+    
+    AS7262Violet = AS7262SensorValues[AS726x_VIOLET];
+    AS7262Blue = AS7262SensorValues[AS726x_BLUE];
+    AS7262Green = AS7262SensorValues[AS726x_GREEN];
+    AS7262Yellow = AS7262SensorValues[AS726x_YELLOW];
+    AS7262Orange = AS7262SensorValues[AS726x_ORANGE];
+    AS7262Red = AS7262SensorValues[AS726x_RED];
+  }
+
+  else if (I2CSensor == "SI1145") {
+    SI1145Visible = SI.readVisible();
+    SI1145IR = SI.readIR();
+    SI1145UV = SI.readUV() / 100.0;
+  }
+
+  else {
+    Serial.println("Error - (in updateI2CSensor()): Please change the variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
+    Serial.println("Exiting program!");
+    updateOLED("Error!\n\nExiting\nprogram!");
+    while(1) {}
+  }
+}
 
 void updateDataStrings(String I2CSensor) {
   
@@ -315,6 +476,100 @@ void updateDataStrings(String I2CSensor) {
   }                  
 }
 
+void updateSD(String text) {                                
+  datalog = SD.open(filename, FILE_WRITE);
+  datalog.println(text);
+  datalog.close();
+  blinkLED(1);
+  dataLogs++;
+  Serial.println(text);
+}
+
+void updateXBee(String text) {
+ if(xBee.available()) {
+  Serial.println("\nData request received from GUT!\n");
+  xBeeString = xBee.read();
+   if (xBeeHeaderSent == false) {
+    xBee.print(xBeeHeader);
+    Serial.println(xBeeHeader);
+    Serial.println("\nHeader sent to GUR!\n");
+    xBeeHeaderSent = true;
+   }
+  else {
+    xBee.print(text);
+    Serial.println(text);
+    Serial.println("\nData sent to GUR via xBee!\n");
+    updateOLED("Request\nfrom GUT!\nData sent\nvia xBee\nto GUR!");
+    displayTimer = millis();
+    blinkLED(2);
+    }
+  }
+}
+
+void updateOLED(String text) {
+  oled.clear(PAGE);
+  oled.setFontType(0);
+  oled.setCursor(0,0);
+  oled.println(text);
+  oled.display();
+}
+
+
+
+/////////////////// EXTRA USER FUNCTIONS ///////////////////
+void getHeader(String I2CSensor, String AnalogSensor) {
+  
+  header = "Unit, Time, MagX, MagY, MagZ, AccelX, AccelY, AccelZ, GyroX, GyroY, GyroZ, TempF, TempC, Photo, " + AnalogSensor + spacer;
+  xBeeHeader = String(Unit) + spacer +  "Time, TempF, TempC, Photo, " + AnalogSensor + spacer;
+  
+  if(I2CSensor == "VEML6070") {
+    header = header + String("VEML6070");
+    xBeeHeader = xBeeHeader + String("VEML6070") + delimiter;
+  }
+
+  else if(I2CSensor == "VEML7700") {
+    header = header + String("Lux") + spacer + String("White") + String ("RawALS");
+    xBeeHeader = xBeeHeader + String("Lux") + spacer + String("White") + spacer + String ("RawALS") + delimiter;
+  }
+
+  else if(I2CSensor == "AS7262") {
+    header = header + String("Temperature") + spacer + String("Violet") + spacer + String("Blue") + spacer + String("Green") + spacer + String("Yellow") + spacer + String("Orange") + spacer + String("Red");
+    xBeeHeader = xBeeHeader + String("Temperature") + spacer + String("Violet") + spacer + String("Blue") + spacer + String("Green") + spacer + String("Yellow") + spacer + String("Orange") + spacer + String("Red") + delimiter;
+  }
+
+  else if(I2CSensor == "SI1145") {
+    header = header + String("Visible") + spacer + String("IR") + spacer + String("UV");
+    xBeeHeader = xBeeHeader + String("Visible") + spacer + String("IR") + spacer + String("UV") + delimiter;
+  }
+
+  else {
+    Serial.println("Error - (in getHeader()): Please change the variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
+    Serial.println("Exiting program!");
+    while(1==1) {}
+  }
+}
+
+void getDisplay() {
+
+  if (millis() - displayTimer > 2000){                   // Allows the OLED to keep the message "Request from GUT! Data sent via xBee to GUR!" displayed for a longer period of time while still running code
+    digitalWrite(LED2, LOW);
+    if(digitalRead(buttonPin) == HIGH) {
+       button++;
+       if(button > 5) button = 0;
+     }
+  
+   switch(button) {
+      case 0: updateOLED(String(currentTempF)+ " F" + endline + String(currentTempC) + " C" + endline + String(PhotoresistorData) + endline + String(AnalogSensorData)); break;
+      case 1: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
+      case 2: updateOLED("Gryo Vals" + endline + endline + "X: " + String(gyroscope[0]) + endline + "Y: " + String(gyroscope[1]) + endline + "Z: " + String(gyroscope[2])); break;
+      case 3: updateOLED("Accel Vals" + endline + "X: " + String(accelerometer[0]) + endline + "Y: " + String(accelerometer[1]) + endline + "Z: " + String(accelerometer[2])); break;
+      case 4: updateOLED("R: " + String(roll) + endline + endline + "P: " + String(pitch) + endline + endline + "H: " + String(heading)); break;
+      case 5: updateOLED(String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer); break;
+     }
+  }
+
+  else {digitalWrite(LED2, HIGH);}
+} 
 
 void updateTimer() {
   int time = (millis() - setUpTime)/1000;                                     // Time we are converting
@@ -324,8 +579,72 @@ void updateTimer() {
   timer = (String(hr) + ":" + String(mins) + ":" + String(sec));             // Converts to HH:MM:SS string
 }
 
+void blinkLED(int x) {
+  if (ledsONorOFF == 1) {
+    if (x == 1) {
+      digitalWrite(LED1, HIGH);
+      delay(50);
+      digitalWrite(LED1, LOW);
+    }
+  
+    if (x == 2) {
+      digitalWrite(LED2, HIGH);
+      delay(50);
+      digitalWrite(LED2, LOW);
+    }
+  
+    if(x != 1 && x != 2) {
+      {Serial.println("Error: 'x' value inputted into function 'blinkLED(x)' not valid! - - - Please use x = 1 or x = 2"); updateOLED("Error:\nblinkLED\nUse valid\nx input!");}
+      while(1){}
+    }
+  }
+}
+
+void blinkLEDs(int x) {
+
+  if (ledsONorOFF == 1) {
+    for (int i = 0; i<x; i++) {
+      digitalWrite(LED1, HIGH);
+      digitalWrite(LED2, HIGH);
+      delay(50);
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED2, LOW);
+      delay(50);
+    }
+  }
+}
 
 
+  // ADDITIONAL FUNCTIONS OF IMU 
+void updateRoll() {
 
+ roll = atan2(accelerometer[1], accelerometer[2]);
+ roll *= 180.0 / PI;
+  
+}
 
+void updatePitch() {
+
+  pitch = atan2(-accelerometer[0], sqrt(accelerometer[1]*accelerometer[1] + accelerometer[2]*accelerometer[2]));
+  pitch *= 180.0 / PI;
+  
+}
+
+void updateHeading() {
+  
+  if (magnetometer[1] == 0) {
+    heading = (magnetometer[0] < 0) ? PI : 0;
+  }
+  
+  else {
+    heading = atan2(magnetometer[0], magnetometer[1]);
+    heading -= DECLINATION * PI / 180;
+  }
+  
+   if(heading > PI) { heading -= (2 * PI); }
+   
+   else if (heading < -PI) { heading += (2 * PI);}
+   
+    heading *= 180.0 / PI;
+}
     
