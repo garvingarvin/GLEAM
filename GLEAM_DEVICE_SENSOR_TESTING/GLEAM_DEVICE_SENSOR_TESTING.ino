@@ -176,7 +176,6 @@ void loop() {
 void setupOLED() {
   Wire.begin();
   if(!oled.begin()) {
-    Serial.println("Failed to communicate with OLED");
     delay(500);
   }
   
