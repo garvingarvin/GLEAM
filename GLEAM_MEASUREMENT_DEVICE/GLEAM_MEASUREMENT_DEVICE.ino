@@ -110,7 +110,7 @@ float AnalogSensorData;                                 // Analog sensor data
 String AnalogSensorBeingUsed = "GUVA-S12SD";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
 
 // GENERAL I2C SENSOR VARIABLES
-String I2CSensorBeingUsed = "VEML7700";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
+String I2CSensorBeingUsed = "AS7262";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
 
 // VEML6070 SENSOR VARIABLES
 float VEML6070Data;                                     
@@ -142,6 +142,7 @@ String xBeeData;                                        // Data string to be sen
 bool xBeeHeaderSent = false;                            // Bool to allow the header to only be sent once
 
 // OLED VARIABLES
+bool OLEDPresentOnBoard = true;                        // *** Set to 'false' if you don't have an OLED on your board 
 int button = 0;                                         // Variable that allows user to push button to change what is displayed on the OLED
 float displayTimer = 0;                                 // Variable used in allowing the OLED to display a message for a given amount of time without stopping the rest of the program
 
@@ -185,7 +186,7 @@ void startupProcedure() {
   int delayTime = 250;
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
-  for(int i = 0; i <4; i++) {
+  for(int i = 0; i < 4; i++) {
     blinkLED(1);
     blinkLED(2);
   }
@@ -196,11 +197,13 @@ void startupProcedure() {
   blinkLEDs(2);
   delay(delayTime);
 
+  if (OLEDPresentOnBoard == true) {
   Serial.print("Starting OLED setup...       ");
   OLEDSetup();
   Serial.println("complete!");
   blinkLEDs(2);
   delay(delayTime);
+  
 
   Serial.print("Display button setup...      ");
   pinMode(buttonPin, INPUT);
@@ -208,6 +211,7 @@ void startupProcedure() {
   Serial.println("complete!");
   blinkLEDs(2);
   delay(delayTime);
+  }
   
   Serial.print("Connecting xBee serial...    ");
   XBeeSerial.begin(XBEE_BAUD_RATE);
@@ -216,12 +220,14 @@ void startupProcedure() {
   blinkLEDs(2);
   delay(delayTime);
 
+  
   Serial.print("Starting IMU setup...        ");
   IMUSetup();
   updateIMU();
   Serial.println("complete!");
   blinkLEDs(2);
   delay(delayTime);
+  
 
   Serial.print("Starting I2C sensor setup... ");
   I2CSensorSetup(I2CSensorBeingUsed);
