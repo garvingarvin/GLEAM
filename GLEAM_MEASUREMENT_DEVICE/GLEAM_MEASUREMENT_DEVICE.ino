@@ -27,9 +27,7 @@
 
                                                         // Note: Don't worry if your library name doesn't turn orange. As long as you have this library downloaded and  
                                                         //       located in the proper folder, Arduino (in this case Teensyduino) will be able to properly use the library.
-                                                        
-// UNIT VARIABLE
-String Unit = "B5";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
+
 
 // SD CARD VARIABLES
 #define chipSelect BUILTIN_SDCARD                       // Using built in chipselect on Teensy 3.5
@@ -107,10 +105,6 @@ float PhotoresistorData;                                // Analog value reading 
 
 // ANALOG SENSOR VARIABLES
 float AnalogSensorData;                                 // Analog sensor data
-String AnalogSensorBeingUsed = "GUVA-S12SD";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
-
-// GENERAL I2C SENSOR VARIABLES
-String I2CSensorBeingUsed = "AS7262";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
 
 // VEML6070 SENSOR VARIABLES
 float VEML6070Data;                                     
@@ -142,19 +136,24 @@ String xBeeData;                                        // Data string to be sen
 bool xBeeHeaderSent = false;                            // Bool to allow the header to only be sent once
 
 // OLED VARIABLES
-bool OLEDPresentOnBoard = true;                        // *** Set to 'false' if you don't have an OLED on your board 
 int button = 0;                                         // Variable that allows user to push button to change what is displayed on the OLED
 float displayTimer = 0;                                 // Variable used in allowing the OLED to display a message for a given amount of time without stopping the rest of the program
 
-// LED VARIABLES
+
+// *** USER INPUT VARIABLES ***
+String Unit = "";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
+String I2CSensorBeingUsed = "";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
+String AnalogSensorBeingUsed = "";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
+bool OLEDOnBoard = ;                                // *** Set to 'true' if you DO have an OLED on your board; set to 'false' if you DO NOT have an OLED on your boad
 int ledsONorOFF = 1;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
 
+
 // SETUP FUNCTION
-void startupProcedure();                                // Startup function which carries out the setup of the Serials, OLED, LEDs, and Sensors
-                                         // Setup function for SD card
+void startupProcedure();                                // Startup function which carries out the setup of the Serials, OLED, LEDs, and SENSORs
+                                       
 // EXTRA USER FUNCTIONS
 void getHeader(String I2CSensor, String AnalogSensor);  // Functioon that sets up head based on the Analog and I2C sensors being used
-void updateDataStrings(String I2CSensor);
+void updateDataStrings(String I2CSensor);               // Funcation that updates the strings that will be printed to the serial monitor, SD card, and XBee radio
 void updateTimer();                                     // Sets the 'timer' variable
 
 
@@ -197,7 +196,7 @@ void startupProcedure() {
   blinkLEDs(2);
   delay(delayTime);
 
-  if (OLEDPresentOnBoard == true) {
+  if (OLEDOnBoard == true) {
   Serial.print("Starting OLED setup...       ");
   OLEDSetup();
   Serial.println("complete!");

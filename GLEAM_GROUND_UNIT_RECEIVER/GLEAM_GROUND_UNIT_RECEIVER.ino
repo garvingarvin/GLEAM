@@ -140,7 +140,7 @@ void setupProcedure() {
   delay(5000);
   Serial.println("done.");
   
-  Serial.print("Setting up SD card...        ");
+  Serial.print("Setting up SD card...        ");            
   setupSD();
   
   Serial.println("Beginning data collection...");

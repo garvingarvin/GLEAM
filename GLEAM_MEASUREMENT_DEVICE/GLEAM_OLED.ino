@@ -19,7 +19,7 @@ void OLEDSetup() {
 
 
 void updateOLED(String text) {
-  if (OLEDPresentOnBoard == true) {
+  if (OLEDOnBoard == true) {
   oled.clear(PAGE);
   oled.setFontType(0);
   oled.setCursor(0,0);
@@ -30,7 +30,7 @@ void updateOLED(String text) {
 
 
 void getDisplay() {
-if (OLEDPresentOnBoard == true) {
+if (OLEDOnBoard == true) {
   if (millis() - displayTimer > 2000){                   // Allows the OLED to keep the message "Request from GUT! Data sent via xBee to GUR!" displayed for a longer period of time while still running code
     digitalWrite(LED2, LOW);
     if(digitalRead(buttonPin) == HIGH) {

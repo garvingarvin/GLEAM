@@ -52,11 +52,11 @@ ZBTxRequest txUnitB5 = ZBTxRequest(UnitB5, payload, sizeof(payload));
 
 // GROUP C
 //Object      Unit#    Mac Addres: (1st 8 bytes, 2nd 8 bytes)
-//XBeeAddress64 UnitC1 = XBeeAddress64(0x, 0x);
-//XBeeAddress64 UnitC2 = XBeeAddress64(0x, 0x);
-//XBeeAddress64 UnitC3 = XBeeAddress64(0x, 0x);
-//XBeeAddress64 UnitC4 = XBeeAddress64(0x, 0x);
-//XBeeAddress64 UnitC5 = XBeeAddress64(0x, 0x);
+//XBeeAddress64 UnitC1 = XBeeAddress64(0x0013A200, 0x41C1539B); Cooper Grau-Firkus
+//XBeeAddress64 UnitC2 = XBeeAddress64(0x0013A200, 0x41C18524); Peter Hartford
+//XBeeAddress64 UnitC3 = XBeeAddress64(0x0013A200, 0x41C16D0C); Alfonso Lanauze-Baez
+//XBeeAddress64 UnitC4 = XBeeAddress64(0x0013A200, 0x41C185AE); Tyler Mattson
+//XBeeAddress64 UnitC5 = XBeeAddress64(0x0013A200, 0x41C153B5); Ben Sorge   
 
 //Object    txUnit#              (Unit#, Payload[], Payload Size)
 //ZBTxRequest txUnitC1 = ZBTxRequest(UnitC1, payload, sizeof(payload));
@@ -69,7 +69,7 @@ ZBTxRequest txUnitB5 = ZBTxRequest(UnitB5, payload, sizeof(payload));
 
 // GROUP D
 //Object      Unit#    Mac Addres: (1st 8 bytes, 2nd 8 bytes)
-//XBeeAddress64 UnitD1 = XBeeAddress64(0x, 0x);
+//XBeeAddress64 UnitD1 = XBeeAddress64(0x, 0x); 
 //XBeeAddress64 UnitD2 = XBeeAddress64(0x, 0x);
 //XBeeAddress64 UnitD3 = XBeeAddress64(0x, 0x);
 //XBeeAddress64 UnitD4 = XBeeAddress64(0x, 0x);
@@ -88,7 +88,7 @@ ZBTxRequest txUnitB5 = ZBTxRequest(UnitB5, payload, sizeof(payload));
 XBeeAddress64 Receiver = XBeeAddress64(0x0013A200, 0x41B7B2A9); 
 ZBTxRequest txReceiver = ZBTxRequest(Receiver, payloadR, sizeof(payloadR));
 
-int LED = 24;
+int LED = 13;
 
 int timeBetweenRequests = 150; // Time between data requests (in milliseconds)
 int timeAfterRequests = 2000; // Time between Reciever request and next Unit 1 request (in milliseconds)
@@ -98,8 +98,8 @@ void blinkLED();
 
 void setup() {
 
-  Serial5.begin(115200);
-  xBee.setSerial(Serial5);
+  Serial.begin(115200);
+  xBee.setSerial(Serial);
   pinMode(LED, OUTPUT);
 }
 
@@ -124,6 +124,7 @@ void sendRequest() {
   //xBee.send(txUnitA4);
   //delay(timeBetweenRequests);
   xBee.send(txUnitA5);
+  blinkLED();
   delay(timeAfterRequests);
   
 
@@ -137,6 +138,7 @@ void sendRequest() {
   //xBee.send(txUnitB4);
   //delay(timeBetweenRequests);
   xBee.send(txUnitB5);
+  blinkLED();
   delay(timeAfterRequests);
   
 
@@ -156,6 +158,7 @@ void sendRequest() {
 
  // GROUP D
   //xBee.send(txUnitD1);
+  //blinkLED();
   //delay(timeBetweenRequests);
   //xBee.send(txUnitD2);
   //delay(timeBetweenRequests);
