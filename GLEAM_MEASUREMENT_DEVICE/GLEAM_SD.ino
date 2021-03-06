@@ -32,8 +32,15 @@ void SDSetup(){
 
       if(!sdActive) {
         Serial.println("No available file names; clear SD card to enable logging");
-        updateOLED("Clear SD!");
+        for(int i = 0; i<4; i++) {
+        updateOLED("Warning:\n\nSD Card\nfull!\n\nClear ASAP");
+        blinkLEDs(1);
         delay(500);
+        updateOLED("");
+        delay(500);
+        }
+        updateOLED("Warning:\n\nSD Card\nfull!\n\nClear ASAP");
+        delay(2000);
     }
   }
 }

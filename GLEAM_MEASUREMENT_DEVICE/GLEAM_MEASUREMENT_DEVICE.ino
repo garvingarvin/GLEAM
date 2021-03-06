@@ -144,7 +144,6 @@ float displayTimer = 0;                                 // Variable used in allo
 String Unit = "";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
 String I2CSensorBeingUsed = "";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
 String AnalogSensorBeingUsed = "";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
-bool OLEDOnBoard = ;                                // *** Set to 'true' if you DO have an OLED on your board; set to 'false' if you DO NOT have an OLED on your boad
 int ledsONorOFF = 1;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
 
 
@@ -196,7 +195,6 @@ void startupProcedure() {
   blinkLEDs(2);
   delay(delayTime);
 
-  if (OLEDOnBoard == true) {
   Serial.print("Starting OLED setup...       ");
   OLEDSetup();
   Serial.println("complete!");
@@ -210,7 +208,7 @@ void startupProcedure() {
   Serial.println("complete!");
   blinkLEDs(2);
   delay(delayTime);
-  }
+ 
   
   Serial.print("Connecting xBee serial...    ");
   XBeeSerial.begin(XBEE_BAUD_RATE);
