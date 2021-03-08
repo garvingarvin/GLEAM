@@ -28,8 +28,6 @@ void blinkLED(int x) {
 }
 
 
-
-
 void blinkLEDs(int x) {
 
   if (ledsONorOFF == 1) {

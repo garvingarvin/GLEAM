@@ -76,7 +76,7 @@ void updateI2CSensor(String I2CSensor) {
   }
 
   else {
-    Serial.println("Error - (in updateI2CSensor()): Please change the variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
+    Serial.println("Error - (in updateI2CSensor()): Please change the User Input Variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
     Serial.println("Exiting program!");
     updateOLED("Error!\n\nExiting\nprogram!");
     while(1) {}

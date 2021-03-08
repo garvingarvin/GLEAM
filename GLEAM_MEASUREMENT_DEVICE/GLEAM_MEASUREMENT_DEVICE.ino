@@ -74,7 +74,7 @@ String timer;                                           // Hours/Minutes/Seconds
 String header;                                          // Used as first row of .csv file to distinguish logged data
 int delayLength = 0;                                    // Delay length (in milliseconds) between each main loop iteration
 int dataLogs = 0;                                       // Number of times data has been logged to SD card
-float setUpTime;                                        // Used to start logging at t = 0 seconds
+float setupTime;                                        // Used to start logging at t = 0 seconds
 
 // IMU VARIABLES
 float magnetometer[3];                                  // Three element array for holding magnetometer values in x, y, z directions, respectively
@@ -210,7 +210,6 @@ void startupProcedure() {
   delay(delayTime);
   
  
-  
   Serial.print("Connecting xBee serial...    ");
   XBeeSerial.begin(XBEE_BAUD_RATE);
   Serial.println("complete!");
@@ -246,7 +245,7 @@ void startupProcedure() {
   blinkLEDs(3);
   delay(delayTime);
 
-  setUpTime = millis();
+  setupTime = millis();
 }
 
 
@@ -279,7 +278,7 @@ void getHeader(String I2CSensor, String AnalogSensor) {
   else {
     Serial.println("Error - (in getHeader()): Please change the User Input Variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
     Serial.println("Exiting program!");
-    while(1==1) {}
+    while(1) {}
   }
 }
 
@@ -287,13 +286,13 @@ void getHeader(String I2CSensor, String AnalogSensor) {
 
 void updateDataStrings(String I2CSensor) {
   
-  Data = Unit + spacer + String((millis() - setUpTime)/1000) + spacer + String(magnetometer[0]) + spacer + String(magnetometer[1]) + spacer + String(magnetometer[2]) + spacer;
+  Data = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(magnetometer[0]) + spacer + String(magnetometer[1]) + spacer + String(magnetometer[2]) + spacer;
   Data = Data + String(accelerometer[0]) + spacer + String(accelerometer[1]) + spacer + String(accelerometer[2]) + spacer;
   Data = Data + String(gyroscope[0]) + spacer + String(gyroscope[1]) + spacer + String(gyroscope[2]) + spacer;
   Data = Data + String(currentTempF) + spacer + String(currentTempC) + spacer;
   Data = Data + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
   
-  xBeeData = Unit + spacer + String((millis() - setUpTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+  xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
 
   if(I2CSensor == "VEML6070") {
     Data = Data + String(VEML6070Data);
@@ -321,7 +320,7 @@ void updateDataStrings(String I2CSensor) {
 
 
 void updateTimer() {
-  int time = (millis() - setUpTime)/1000;                                     // Time we are converting
+  int time = (millis() - setupTime)/1000;                                     // Time we are converting
   int hr = time/3600;                                                         // Number of hours
   int mins = (time-hr*3600)/60;                                               // Remove the number of hours and calculate the minutes.
   int sec = time-hr*3600-mins*60;                                            // Remove the number of hours and minutes, leaving only seconds.
