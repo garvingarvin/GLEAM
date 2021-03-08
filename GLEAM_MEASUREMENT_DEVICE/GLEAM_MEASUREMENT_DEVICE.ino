@@ -208,6 +208,7 @@ void startupProcedure() {
   Serial.println("complete!");
   blinkLEDs(2);
   delay(delayTime);
+  
  
   
   Serial.print("Connecting xBee serial...    ");
@@ -276,7 +277,7 @@ void getHeader(String I2CSensor, String AnalogSensor) {
   }
 
   else {
-    Serial.println("Error - (in getHeader()): Please change the variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
+    Serial.println("Error - (in getHeader()): Please change the User Input Variable 'I2CSensorBeingUsed' to one of the four I2C sensor options!");
     Serial.println("Exiting program!");
     while(1==1) {}
   }

@@ -18,7 +18,7 @@
 // SD CARD VARIABLES
 #define chipSelect BUILTIN_SDCARD                       // Using built in chipselect on Teensy 3.5
 File datalog;                                           // File object to be opened, written to, and closed
-char filename[] = "GLM00.csv";                          // File name as will be seen on SD card -- can have maximum of 99 files on SD card ('GLM00' -> 'GLM99')
+char filename[] = "GLMR00.csv";                          // File name as will be seen on SD card -- can have maximum of 99 files on SD card ('GLM00' -> 'GLM99')
 bool sdActive = false;                                  // Boolean to check if there are any available filenames left to be used 
 
 // MICRO_OLED SETTINGS and OBJECT
@@ -159,8 +159,8 @@ void setupSD() {
   else {
     Serial.print("      card initialized! \nCreating File...                   ");
     for (byte i = 0; i<100; i++) {
-      filename[3] = '0' + i/10;
-      filename[4] = '0' + i%10;
+      filename[4] = '0' + i/10;
+      filename[5] = '0' + i%10;
       if(!SD.exists(filename)) {
         datalog = SD.open(filename, FILE_WRITE);
         sdActive = true;
@@ -358,20 +358,20 @@ void printData() {
   if (ReceiverBool == true) {
 
   // GROUP A
-  // dataString = String(millis()/1000) + ", " + UnitA1String + UnitA2String + UnitA3String + UnitA4String + UnitA5String;
+  // dataString = String(millis()/1000.0) + ", " + UnitA1String + UnitA2String + UnitA3String + UnitA4String + UnitA5String;
 
   // GROUP B
-  // dataString = String(millis()/1000) + ", " + UnitB1String + UnitB2String + UnitB3String + UnitB4String + UnitB5String;
+  // dataString = String(millis()/1000.0) + ", " + UnitB1String + UnitB2String + UnitB3String + UnitB4String + UnitB5String;
 
   // GROUP C
-  // dataString = String(millis()/1000) + ", " + UnitC1String + UnitC2String + UnitC3String + UnitC4String + UnitC5String;
+  // dataString = String(millis()/1000.0) + ", " + UnitC1String + UnitC2String + UnitC3String + UnitC4String + UnitC5String;
 
   // GROUP D
-  // dataString = String(millis()/1000) + ", " + UnitD1String + UnitD2String + UnitD3String + UnitD4String + UnitD5String;
+  // dataString = String(millis()/1000.0) + ", " + UnitD1String + UnitD2String + UnitD3String + UnitD4String + UnitD5String;
 
   // ALL GROUPS
   
-  dataString = String(millis()/1000) + ", " + UnitA1String + UnitA2String + UnitA3String + UnitA4String + UnitA5String;
+  dataString = String(millis()/1000.0) + ", " + UnitA1String + UnitA2String + UnitA3String + UnitA4String + UnitA5String;
   dataString = dataString + UnitB1String + UnitB2String + UnitB3String + UnitB4String + UnitB5String;
   dataString = dataString + UnitC1String  + UnitC2String + UnitC3String + UnitC4String + UnitC5String;
   dataString = dataString + UnitD1String + UnitD2String + UnitD3String + UnitD4String + UnitD5String;
