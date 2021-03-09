@@ -34,23 +34,66 @@ void updateOLED(String text) {
 }
 
 
-void getDisplay() {
+void updateDisplay() {
 
   if (millis() - displayTimer > 2000){                   // Allows the OLED to keep the message "Request from GUT! Data sent via xBee to GUR!" displayed for a longer period of time while still running code
     digitalWrite(LED2, LOW);
-    if(digitalRead(buttonPin) == HIGH) {
-       button++;
-       if(button > 5) button = 0;
+    if(digitalRead(BUTTON) == HIGH) {
+       display++;
+       if(display > numberOfDisplays) display = 0;
      }
   
-   switch(button) {
-      case 0: updateOLED(String(currentTempF)+ " F" + endline + String(currentTempC) + " C" + endline + String(PhotoresistorData) + endline + String(AnalogSensorData)); break;
-      case 1: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
-      case 2: updateOLED("Gryo Vals" + endline + endline + "X: " + String(gyroscope[0]) + endline + "Y: " + String(gyroscope[1]) + endline + "Z: " + String(gyroscope[2])); break;
-      case 3: updateOLED("Accel Vals" + endline + "X: " + String(accelerometer[0]) + endline + "Y: " + String(accelerometer[1]) + endline + "Z: " + String(accelerometer[2])); break;
-      case 4: updateOLED("R: " + String(roll) + endline + endline + "P: " + String(pitch) + endline + endline + "H: " + String(heading)); break;
-      case 5: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+  if(I2CSensorBeingUsed == "AS7262") {
+    switch(display) {
+      case 0: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
+      case 1: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
+      case 2: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
+      case 3: updateOLED("Gryo Vals" + endline + endline + "X: " + String(gyroscope[0]) + endline + "Y: " + String(gyroscope[1]) + endline + "Z: " + String(gyroscope[2])); break;
+      case 4: updateOLED("Accel Vals" + endline + "X: " + String(accelerometer[0]) + endline + "Y: " + String(accelerometer[1]) + endline + "Z: " + String(accelerometer[2])); break;
+      case 5: updateOLED("Violet:\n" + String(AS7262Violet) + endline + "Blue:\n" + String(AS7262Blue) + endline + "Green:\n" + String(AS7262Green)); break;
+      case 6: updateOLED("Yellow:\n" + String(AS7262Yellow) + endline + "Orange:\n" + String(AS7262Orange) + endline + "Red:\n" + String(AS7262Red)); break;
+      case 7: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
      }
+  }
+  else if(I2CSensorBeingUsed == "VEML6070") {
+    switch(display) {
+      case 0: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
+      case 1: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
+      case 2: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
+      case 3: updateOLED("Gryo Vals" + endline + endline + "X: " + String(gyroscope[0]) + endline + "Y: " + String(gyroscope[1]) + endline + "Z: " + String(gyroscope[2])); break;
+      case 4: updateOLED("Accel Vals" + endline + "X: " + String(accelerometer[0]) + endline + "Y: " + String(accelerometer[1]) + endline + "Z: " + String(accelerometer[2])); break;
+      case 5: updateOLED(String(I2CSensorBeingUsed) + ":\n\n" + String(VEML6070Data)); break;
+      case 6: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+    }
+  }
+    else if(I2CSensorBeingUsed == "VEML7700") {
+      switch(display) {
+      case 0: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
+      case 1: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
+      case 2: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
+      case 3: updateOLED("Gryo Vals" + endline + endline + "X: " + String(gyroscope[0]) + endline + "Y: " + String(gyroscope[1]) + endline + "Z: " + String(gyroscope[2])); break;
+      case 4: updateOLED("Accel Vals" + endline + "X: " + String(accelerometer[0]) + endline + "Y: " + String(accelerometer[1]) + endline + "Z: " + String(accelerometer[2])); break;
+      case 5: updateOLED("Lux:\n" + String(VEML7700Lux) + endline + "White:\n" + String(VEML7700White) + endline + "RawALS:\n" + String(VEML7700RawALS)); break;
+      case 6: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+    }
+  }
+    else if(I2CSensorBeingUsed == "SI1145") {
+      switch(display) {
+      case 0: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
+      case 1: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
+      case 2: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
+      case 3: updateOLED("Gryo Vals" + endline + endline + "X: " + String(gyroscope[0]) + endline + "Y: " + String(gyroscope[1]) + endline + "Z: " + String(gyroscope[2])); break;
+      case 4: updateOLED("Accel Vals" + endline + "X: " + String(accelerometer[0]) + endline + "Y: " + String(accelerometer[1]) + endline + "Z: " + String(accelerometer[2])); break;
+      case 5: updateOLED("Visible:\n" + String(SI1145Visible) + endline + "Infrared:\n" + String(SI1145IR) + endline + "Ult Viol:\n" + String(SI1145UV)); break;
+      case 6: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+    }
+  }
+    else {
+      Serial.println("Error - (in updateDisplay()): Please change the User Input Variable 'I2CSensorBeingUsed' to one of the four I2C sensor options and reset system!");
+      Serial.println("Exiting program!");
+      updateOLED("Error!\n\nExiting\nprogram!");
+      while(1) {}   
+    }
   }
 
   else {digitalWrite(LED2, HIGH);}

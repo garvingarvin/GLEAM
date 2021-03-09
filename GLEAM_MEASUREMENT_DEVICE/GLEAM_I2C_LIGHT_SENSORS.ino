@@ -10,6 +10,7 @@ void I2CSensorSetup(String I2CSensor) {
   
   if (I2CSensor == "VEML6070") {
     veml6070.begin(VEML6070_1_T);
+    numberOfDisplays = 6;
   }
 
   else if (I2CSensor == "VEML7700") {
@@ -19,14 +20,17 @@ void I2CSensorSetup(String I2CSensor) {
     veml7700.setLowThreshold(10000);
     veml7700.setHighThreshold(20000);
     veml7700.interruptEnable(true);
+    numberOfDisplays = 6;
   }
 
   else if (I2CSensor == "AS7262") {
     AS.begin();
+    numberOfDisplays = 7;
   }
 
   else if (I2CSensor == "SI1145") {
     SI.begin();
+    numberOfDisplays = 6;
   }
 
   else {

@@ -10,7 +10,7 @@
  * the data to an SD card, and send data to the Ground Unit Reciever (GUR) once a request is    |
  * detected from the Ground Unit Transmitter (GUT).                                             |
  ----------------------------------------------------------------------------------------------*/
-
+ 
 // SENSORs, SD, and I2C LIBRARIES
 #include <Wire.h>                                       // I2C  library                    - Should already be on your computer as a part of the IDE download
 #include <SPI.h>                                        // SPI  library                    - Should already be on your computer as a part of the IDE download
@@ -48,7 +48,7 @@ bool sdActive = false;                                  // Boolean to check if t
 #define ANALOGSENSOR A18                                // Analog pin 18 for respective analog sensor
 #define LED1 24                                         // Digital pin for LED1
 #define LED2 25                                         // Digital pin for LED2
-#define buttonPin 38                                    // Digital pin for button
+#define BUTTON 38                                    // Digital pin for button
 
 // BAUD RATES
 #define SERIAL_BAUD_RATE 9600                           // Baud rate of serial monitor
@@ -136,9 +136,9 @@ String xBeeData;                                        // Data string to be sen
 bool xBeeHeaderSent = false;                            // Bool to allow the header to only be sent once
 
 // OLED VARIABLES
-int button = 0;                                         // Variable that allows user to push button to change what is displayed on the OLED
+int display = 0;                                         // Variable that allows user to push button to change what is displayed on the OLED
 float displayTimer = 0;                                 // Variable used in allowing the OLED to display a message for a given amount of time without stopping the rest of the program
-
+int numberOfDisplays;
 
 // *********** USER INPUT VARIABLES ***********
 String Unit = "";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
@@ -174,7 +174,7 @@ void loop() {
   updateDataStrings(I2CSensorBeingUsed);
   updateSD(Data);
   updateXBee(xBeeData);
-  getDisplay();
+  updateDisplay();
   delay(delayLength);
   
 }
@@ -203,7 +203,7 @@ void startupProcedure() {
   
 
   Serial.print("Display button setup...      ");
-  pinMode(buttonPin, INPUT);
+  pinMode(BUTTON, INPUT);
   updateOLED("Button\nonline!");
   Serial.println("complete!");
   blinkLEDs(2);
@@ -261,7 +261,7 @@ void getHeader(String I2CSensor, String AnalogSensor) {
   }
 
   else if(I2CSensor == "VEML7700") {
-    header = header + String("Lux") + spacer + String("White") + String ("RawALS");
+    header = header + String("Lux") + spacer + String("White") + spacer + String ("RawALS");
     xBeeHeader = xBeeHeader + String("Lux") + spacer + String("White") + spacer + String ("RawALS") + delimiter;
   }
 

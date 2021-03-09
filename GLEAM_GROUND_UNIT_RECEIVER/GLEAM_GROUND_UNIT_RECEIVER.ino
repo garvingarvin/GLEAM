@@ -44,29 +44,29 @@ String list = "";
 
 String spacer = ", ";
 
-String UnitA1String = "UnitA1 Not Detected, ";
-String UnitA2String = "UnitA2 Not Detected, ";
-String UnitA3String = "UnitA3 Not Detected, ";
-String UnitA4String = "UnitA4 Not Detected, ";
+String UnitA1String = "UnitA1 Not Detected, "; // Karalus, Calvin
+String UnitA2String = "UnitA2 Not Detected, "; // Meyer, Shawn
+String UnitA3String = "UnitA3 Not Detected, "; // Nihart, Joe
+String UnitA4String = "UnitA4 Not Detected, "; // Toriseva, Ben
 String UnitA5String = "UnitA5 Not Detected,,,,,,,,, "; // Professor Flaten
 
-String UnitB1String = "UnitB1 Not Detected, ";
-String UnitB2String = "UnitB2 Not Detected, ";
-String UnitB3String = "UnitB3 Not Detected, ";
-String UnitB4String = "UnitB4 Not Detected, ";
+String UnitB1String = "UnitB1 Not Detected, "; // Bauers, Macy
+String UnitB2String = "UnitB2 Not Detected, "; // Elliot, Greta
+String UnitB3String = "UnitB3 Not Detected, "; // Saner, Garvin
+String UnitB4String = "UnitB4 Not Detected, "; // Stevens, Ben
 String UnitB5String = "UnitB5 Not Detected,,,,,,,,,,,,, "; // Joe Poeppel
 
-String UnitC1String = "UnitC1 Not Detected, ";
-String UnitC2String = "UnitC2 Not Detected, ";
-String UnitC3String = "UnitC3 Not Detected, ";
-String UnitC4String = "UnitC4 Not Detected, ";
-String UnitC5String = "UnitC5 Not Detected, ";
-
-String UnitD1String = "UnitD1 Not Detected, ";
-String UnitD2String = "UnitD2 Not Detected, ";
-String UnitD3String = "UnitD3 Not Detected, ";
-String UnitD4String = "UnitD4 Not Detected, ";
-String UnitD5String = "UnitD5 Not Detected, ";
+String UnitC1String = "UnitC1 Not Detected, "; // Grau-Firkus, Cooper
+String UnitC2String = "UnitC2 Not Detected, "; // Hartford, Peter
+String UnitC3String = "UnitC3 Not Detected, "; // Lanauze-Baez, Alfonso
+String UnitC4String = "UnitC4 Not Detected, "; // Mattson, Tyler
+String UnitC5String = "UnitC5 Not Detected, "; // Sorge, Ben
+ 
+String UnitD1String = "UnitD1 Not Detected, "; // Anderson, Logan
+String UnitD2String = "UnitD2 Not Detected, "; // Das, Roudh
+String UnitD3String = "UnitD3 Not Detected, "; // Habegger Mc Cabe, Erne
+String UnitD4String = "UnitD4 Not Detected, "; // Ray, Ben
+String UnitD5String = "UnitD5 Not Detected, "; // Vanhatten, Isabelle
 
 bool UnitA1Bool = false;
 bool UnitA2Bool = false;
