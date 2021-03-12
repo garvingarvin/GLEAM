@@ -3,12 +3,12 @@
  * AEM 4490 - Introduction to Aerospace Topics                                                  |
  * GLEAM Project - Measurement Device                                                           |
  * Author: Joe Poeppel - poepp027@umn.edu                                                       |
- * Date: 2/25/2021                                                                              |
+ * Date: 3/10/2021                                                                              |
  *                                                                                              | 
  * XBee Series 3 Mesh Network: Measurement Device for GLEAM Project                             |
  * This software is to be placed on the measurement units that are to collect data, log         |
- * the data to an SD card, and send data to the Ground Unit Reciever (GUR) once a request is    |
- * detected from the Ground Unit Transmitter (GUT).                                             |
+ * the data to an SD card, and send data to the Ground Unit Reciever (CUR) once a request is    |
+ * detected from the Ground Unit Transmitter (CUT). Designed for a Teensy 3.5 and Teensyduino.  |
  ----------------------------------------------------------------------------------------------*/
  
 // SENSORs, SD, and I2C LIBRARIES
@@ -141,9 +141,9 @@ float displayTimer = 0;                                 // Variable used in allo
 int numberOfDisplays;
 
 // *********** USER INPUT VARIABLES ***********
-String Unit = "";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
-String I2CSensorBeingUsed = "";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
-String AnalogSensorBeingUsed = "";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
+String Unit = "B5";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
+String I2CSensorBeingUsed = "AS7262";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
+String AnalogSensorBeingUsed = "GUVA-S12SD";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
 int ledsONorOFF = 1;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
 
 

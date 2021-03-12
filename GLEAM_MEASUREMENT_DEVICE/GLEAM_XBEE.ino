@@ -20,7 +20,7 @@ void updateXBee(String text) {
     xBee.print(text);
     Serial.println(text);
     Serial.println("\nData sent to GUR via xBee!\n");
-    updateOLED("Request\nfrom GUT!\nData sent\nvia xBee\nto GUR!");
+    updateOLED("Request\nfrom CUT!\nData sent\nvia xBee\nto CUR!");
     displayTimer = millis();
     blinkLED(2);
     }
