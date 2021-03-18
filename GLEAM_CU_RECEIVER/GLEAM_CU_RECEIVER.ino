@@ -183,6 +183,7 @@ void receiveXBeeData() {
   if (xBee.available()) {
     xbeeData = xBee.readStringUntil('Q');
   }
+    Serial.println(xbeeData);
     blinkLED(1);
     parseData();
 }
@@ -196,20 +197,20 @@ void printData() {
   // dataString = String(millis()/1000.0) + ", " + UnitA1String + UnitA2String + UnitA3String + UnitA4String + UnitA5String;
 
   // GROUP B
-  // dataString = String(millis()/1000.0) + ", " + UnitB1String + UnitB2String + UnitB3String + UnitB4String + UnitB5String;
+   dataString = String(millis()/1000.0) + ", " + UnitB1String + UnitB2String + UnitB3String + UnitB4String + UnitB5String;
 
   // GROUP C
   // dataString = String(millis()/1000.0) + ", " + UnitC1String + UnitC2String + UnitC3String + UnitC4String + UnitC5String;
 
   // GROUP D
-  // dataString = String(millis()/1000.0) + ", " + UnitD1String + UnitD2String + UnitD3String + UnitD4String + UnitD5String;
+  //dataString = String(millis()/1000.0) + ", " + UnitD1String + UnitD2String + UnitD3String + UnitD4String + UnitD5String;
 
   // ALL GROUPS
   
-  dataString = String(millis()/1000.0) + ", " + UnitA1String + UnitA2String + UnitA3String + UnitA4String + UnitA5String;
-  dataString = dataString + UnitB1String + UnitB2String + UnitB3String + UnitB4String + UnitB5String;
-  dataString = dataString + UnitC1String  + UnitC2String + UnitC3String + UnitC4String + UnitC5String;
-  dataString = dataString + UnitD1String + UnitD2String + UnitD3String + UnitD4String + UnitD5String;
+//  dataString = String(millis()/1000.0) + ", " + UnitA1String + UnitA2String + UnitA3String + UnitA4String + UnitA5String;
+//  dataString = dataString + UnitB1String + UnitB2String + UnitB3String + UnitB4String + UnitB5String;
+//  dataString = dataString + UnitC1String  + UnitC2String + UnitC3String + UnitC4String + UnitC5String;
+//  dataString = dataString + UnitD1String + UnitD2String + UnitD3String + UnitD4String + UnitD5String;
 
   Serial.println(dataString);
   updateSD();
