@@ -3,7 +3,7 @@
  * AEM 4490 - Introduction to Aerospace Topics                                                  |
  * GLEAM Project - Measurement Device: XBee Radio Functions                                     |
  * Author: Joe Poeppel - poepp027@umn.edu                                                       |
- * Date: 2/25/2021                                                                              |                                  
+ * Date: 3/18/2021                                                                              |                                  
  ----------------------------------------------------------------------------------------------*/
 
 void updateXBee(String text) {
@@ -16,6 +16,7 @@ void updateXBee(String text) {
     Serial.println("\nHeader sent to GUR!\n");
     xBeeHeaderSent = true;
    }
+   
   else {
     xBee.print(text);
     Serial.println(text);
