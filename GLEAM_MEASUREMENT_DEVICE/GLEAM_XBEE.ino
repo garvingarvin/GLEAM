@@ -9,7 +9,10 @@
 void updateXBee(String text) {
  if(xBee.available()) {
   Serial.println("\nData request received from GUT!\n");
-  xBeeString = xBee.read();
+  xBeeString = xBee.readString();
+  Serial.println("xBeeString: " + String(xBeeString));
+  if(xBeeString.charAt(0) == 'H') {xBeeHeaderSent = false;}
+  
    if (xBeeHeaderSent == false) {
     xBee.print(xBeeHeader);
     Serial.println(xBeeHeader);
