@@ -3,13 +3,14 @@
  * AEM 4490 - Introduction to Aerospace Topics                                                  |
  * GLEAM Project - Measurement Device                                                           |
  * Author: Joe Poeppel - poepp027@umn.edu                                                       |
- * Edited By Garvin Saner                                                                             |
+ * Edited By Team B                                                                             |
  *                                                                                              | 
  * XBee Series 3 Mesh Network: Measurement Device for GLEAM Project                             |
  * This software is to be placed on the measurement units that are to collect data, log         |
  * the data to an SD card, and send data to the Ground Unit Reciever (CUR) once a request is    |
  * detected from the Ground Unit Transmitter (CUT). Designed for a Teensy 3.5 and Teensyduino.  |
  ----------------------------------------------------------------------------------------------*/
+ 
 // Version Number and Date
 String version_num = "0.0.2";
 String date = "3/20/2021";
