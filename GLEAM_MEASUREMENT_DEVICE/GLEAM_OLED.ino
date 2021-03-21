@@ -20,6 +20,13 @@ void OLEDSetup() {
   oled.println("GLEAM\nDevice\nUnit " + String(Unit));
   oled.display();
   delay(1500);
+
+  oled.clear(PAGE);
+  oled.setFontType(0);
+  oled.setCursor(0,0);
+  oled.println("Version:\n" + version_num + "\n\nDate:\n" + date);
+  oled.display();
+  delay(3000);
 }
 
 

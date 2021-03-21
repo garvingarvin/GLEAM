@@ -3,13 +3,18 @@
  * AEM 4490 - Introduction to Aerospace Topics                                                  |
  * GLEAM Project - Measurement Device                                                           |
  * Author: Joe Poeppel - poepp027@umn.edu                                                       |
- * Date: 3/10/2021                                                                              |
+ * Edited By Team B                                                                             |
  *                                                                                              | 
  * XBee Series 3 Mesh Network: Measurement Device for GLEAM Project                             |
  * This software is to be placed on the measurement units that are to collect data, log         |
  * the data to an SD card, and send data to the Ground Unit Reciever (CUR) once a request is    |
  * detected from the Ground Unit Transmitter (CUT). Designed for a Teensy 3.5 and Teensyduino.  |
  ----------------------------------------------------------------------------------------------*/
+ 
+// Version Number and Date
+String version_num = "0.0.2";
+String date = "3/20/2021";
+
  
 // SENSORs, SD, and I2C LIBRARIES
 #include <Wire.h>                                       // I2C  library                    - Should already be on your computer as a part of the IDE download
@@ -72,7 +77,10 @@ String endline = "\n";                                  // Used to make creating
 String delimiter = "Q";                                 // Used to make creating Data and SDData strings quicker and more organized - delimiter must be an uppercase 'E' in order for the GUR to properly read your data
 String timer;                                           // Hours/Minutes/Seconds
 String header;                                          // Used as first row of .csv file to distinguish logged data
-int delayLength = 0;                                    // Delay length (in milliseconds) between each main loop iteration
+int delayFast = 100;                                     // Fast data logging (ms)
+int delaySlow = 1000;                                   // Slow data logging (ms)
+int delayLength = delayFast;                            // Delay length (in milliseconds) between each main loop iteration
+int deployTime = 10;                                    // Seconds from start when swtich to slow data logging occurs
 int dataLogs = 0;                                       // Number of times data has been logged to SD card
 float setupTime;                                        // Used to start logging at t = 0 seconds
 
@@ -141,9 +149,9 @@ float displayTimer = 0;                                 // Variable used in allo
 int numberOfDisplays;
 
 // *********** USER INPUT VARIABLES ***********
-String Unit = "";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
-String I2CSensorBeingUsed = "";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
-String AnalogSensorBeingUsed = "";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
+String Unit = "B3";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
+String I2CSensorBeingUsed = "VEML7700";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
+String AnalogSensorBeingUsed = "GUVA-S12SD";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
 int ledsONorOFF = 1;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
 
 
@@ -164,7 +172,6 @@ void setup() {
 
 
 void loop() {
-  
   updateTimer();
   updateIMU();
   updateThermistor();
@@ -176,6 +183,7 @@ void loop() {
   updateXBee(xBeeData);
   updateDisplay();
   delay(delayLength);
+  updateDelay();
   
 }
 
@@ -327,7 +335,12 @@ void updateTimer() {
   timer = (String(hr) + ":" + String(mins) + ":" + String(sec));             // Converts to HH:MM:SS string
 }
 
-
+void updateDelay() {
+  if(dataLogs == ((deployTime*500)/delayFast))
+  {
+    delayLength = delaySlow;
+  }
+}
 
 
 
