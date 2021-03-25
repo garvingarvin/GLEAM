@@ -83,6 +83,7 @@ int delayLength = delayFast;                            // Delay length (in mill
 int deployTime = 10;                                    // Seconds from start when swtich to slow data logging occurs
 int dataLogs = 0;                                       // Number of times data has been logged to SD card
 float setupTime;                                        // Used to start logging at t = 0 seconds
+int xbeeLines = 0;                                      // Number of lines in xbeeData string
 
 // IMU VARIABLES
 float magnetometer[3];                                  // Three element array for holding magnetometer values in x, y, z directions, respectively
@@ -299,8 +300,14 @@ void updateDataStrings(String I2CSensor) {
   Data = Data + String(gyroscope[0]) + spacer + String(gyroscope[1]) + spacer + String(gyroscope[2]) + spacer;
   Data = Data + String(currentTempF) + spacer + String(currentTempC) + spacer;
   Data = Data + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
-  
-  xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+
+  xbeeLines++;
+  if(xbeeLines > 1){
+    xBeeData = endline + Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+  }
+  else{
+    xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+  }
 
   if(I2CSensor == "VEML6070") {
     Data = Data + String(VEML6070Data);

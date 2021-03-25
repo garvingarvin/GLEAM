@@ -27,6 +27,7 @@ void updateXBee(String text) {
     updateOLED("Request\nfrom CUT!\nData sent\nvia xBee\nto CUR!");
     displayTimer = millis();
     blinkLED(2);
+    xbeeLines = 0;
     }
   }
 }
