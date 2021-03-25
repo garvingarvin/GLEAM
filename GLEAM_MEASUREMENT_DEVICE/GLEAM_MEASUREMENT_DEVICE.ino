@@ -303,10 +303,15 @@ void updateDataStrings(String I2CSensor) {
 
   xbeeLines++;
   if(xbeeLines > 1){
-    xBeeData = endline + Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+    xBeeData = xbeeData + endline + Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+  }
+  else if(xbeeLines = 1){
+    xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
   }
   else{
     xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+    xbeeLines = 0;
+    serial.println("!!!!! Error with xbeeLines !!!!!");
   }
 
   if(I2CSensor == "VEML6070") {
