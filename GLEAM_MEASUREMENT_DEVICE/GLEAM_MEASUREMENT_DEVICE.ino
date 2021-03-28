@@ -12,8 +12,8 @@
  ----------------------------------------------------------------------------------------------*/
  
 // Version Number and Date
-String version_num = "0.0.2";
-String date = "3/20/2021";
+String version_num = "0.0.21";
+String date = "3/28/2021";
 
  
 // SENSORs, SD, and I2C LIBRARIES
@@ -76,13 +76,19 @@ String spacer = ", ";                                   // Used to make creating
 String endline = "\n";                                  // Used to make creating Data and SDData strings quicker and more organized 
 String delimiter = "Q";                                 // Used to make creating Data and SDData strings quicker and more organized - delimiter must be an uppercase 'E' in order for the GUR to properly read your data
 String timer;                                           // Hours/Minutes/Seconds
+double timeS;                                               // Time in s
 String header;                                          // Used as first row of .csv file to distinguish logged data
-int delayFast = 100;                                     // Fast data logging (ms)
-int delaySlow = 1000;                                   // Slow data logging (ms)
-int delayLength = delayFast;                            // Delay length (in milliseconds) between each main loop iteration
-int deployTime = 10;                                    // Seconds from start when swtich to slow data logging occurs
 int dataLogs = 0;                                       // Number of times data has been logged to SD card
 float setupTime;                                        // Used to start logging at t = 0 seconds
+
+//DELAY UPDATE VARIABLES
+int delayFast = 50;                                     // Fast data logging (ms)
+int delaySlow = 500;                                   // Slow data logging (ms)
+int delayLength = delayFast;                            // Delay length (in milliseconds) between each main loop iteration
+int fastDataTime = 10;                                    // Seconds from start when swtich to slow data logging occurs
+float accelPrev[3];                                       //Stores the previous accelerometer values for comparison
+int startTime;                                            // Time of inital accelerometer disturbance
+double accelTolerance = .05;                             // Amount accel data needs to change (in Gs) to increase data recording rate
 
 // IMU VARIABLES
 float magnetometer[3];                                  // Three element array for holding magnetometer values in x, y, z directions, respectively
@@ -328,15 +334,25 @@ void updateDataStrings(String I2CSensor) {
 
 
 void updateTimer() {
-  int time = (millis() - setupTime)/1000;                                     // Time we are converting
-  int hr = time/3600;                                                         // Number of hours
-  int mins = (time-hr*3600)/60;                                               // Remove the number of hours and calculate the minutes.
-  int sec = time-hr*3600-mins*60;                                            // Remove the number of hours and minutes, leaving only seconds.
+  timeS = (millis() - setupTime)/1000;                                     // Time we are converting
+  int hr = timeS/3600;                                                         // Number of hours
+  int mins = (timeS-hr*3600)/60;                                               // Remove the number of hours and calculate the minutes.
+  int sec = timeS-hr*3600-mins*60;                                            // Remove the number of hours and minutes, leaving only seconds.
   timer = (String(hr) + ":" + String(mins) + ":" + String(sec));             // Converts to HH:MM:SS string
+  if(sec < 10)
+  {
+    timer = (String(hr) + ":" + String(mins) + ":0" + String(sec));
+  }
 }
 
 void updateDelay() {
-  if(dataLogs == ((deployTime*500)/delayFast))
+  if(abs(accelPrev[0]-accelerometer[0]) > accelTolerance || abs(accelPrev[1]-accelerometer[1]) > accelTolerance || abs(accelPrev[2]-accelerometer[2]) > accelTolerance)
+  {
+    startTime = timeS;
+    delayLength = delayFast;
+    blinkLED(2);
+  }
+  if((timeS - startTime) > ((fastDataTime)))
   {
     delayLength = delaySlow;
   }
