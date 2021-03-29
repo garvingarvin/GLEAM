@@ -46,6 +46,7 @@ void updateDisplay() {
   if (millis() - displayTimer > 2000){                   // Allows the OLED to keep the message "Request from GUT! Data sent via xBee to GUR!" displayed for a longer period of time while still running code
     digitalWrite(LED2, LOW);
     if(digitalRead(BUTTON) == HIGH) {
+       pressTime = millis();                      //tracks time when button was pressed
        display++;
        if(display > numberOfDisplays) display = 0;
      }
@@ -101,6 +102,11 @@ void updateDisplay() {
       updateOLED("Error!\n\nExiting\nprogram!");
       while(1) {}   
     }
+  }
+
+    //Macy: OLED Displays sleep if the button is not pressed for 60 seconds
+  else if ((millis()-pressTime)> 60000) {
+    updateOLED("Sleep"); break;
   }
 
   else {digitalWrite(LED2, HIGH);}
