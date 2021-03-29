@@ -104,13 +104,13 @@ void updateDisplay() {
     }
   }
 
-    //Macy: OLED Displays sleep if the button is not pressed for 60 seconds
-  else if ((millis()-pressTime)> 60000) {
-    updateOLED("Sleep"); break;
-  }
-
   else {digitalWrite(LED2, HIGH);}
 }
+
+   //Macy: OLED Displays sleep if the button is not pressed for 60 seconds
+  if ((millis()-pressTime)> 60000) {
+    updateOLED("Sleep"); exit;
+  }
 
 
 void lines()
