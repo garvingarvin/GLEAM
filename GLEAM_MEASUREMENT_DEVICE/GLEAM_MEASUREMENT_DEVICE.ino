@@ -353,7 +353,6 @@ void updateDelay() {
   {
     startTime = timeS;
     delayLength = delayFast;
-    blinkLED(2);
   }
   if((timeS - startTime) > ((fastDataTime)))
   {
