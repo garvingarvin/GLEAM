@@ -47,8 +47,20 @@ void updateDisplay() {
     digitalWrite(LED2, LOW);
     if(digitalRead(BUTTON) == HIGH) {
        display++;
+       pressTime = millis();
        if(display > numberOfDisplays) display = 0;
      }
+  if(millis() > (sleepDelay + pressTime)){
+    if(displaySleep > 10){
+      updateOLED("");
+      return;
+    }
+    else{
+      updateOLED("Display\nSleeping\n\nZzzzzz...");
+      displaySleep++;
+      return;
+    }
+  }
   
   if(I2CSensorBeingUsed == "AS7262") {
     switch(display) {
