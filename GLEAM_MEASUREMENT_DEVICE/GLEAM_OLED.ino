@@ -51,13 +51,12 @@ void updateDisplay() {
        if(display > numberOfDisplays) display = 0;
      }
   if(millis() > (sleepDelay + pressTime)){
-    if(displaySleep > 10){
+    if(millis() > (sleepDelay + pressTime + 5000)){
       updateOLED("");
       return;
     }
     else{
       updateOLED("Display\nSleeping\n\nZzzzzz...");
-      displaySleep++;
       return;
     }
   }

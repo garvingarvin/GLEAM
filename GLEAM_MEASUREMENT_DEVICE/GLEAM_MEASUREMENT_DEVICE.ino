@@ -12,8 +12,8 @@
  ----------------------------------------------------------------------------------------------*/
  
 // Version Number and Date
-String version_num = "0.0.21";
-String date = "3/28/2021";
+String version_num = "0.0.22";
+String date = "3/29/2021";
 
  
 // SENSORs, SD, and I2C LIBRARIES
@@ -155,7 +155,6 @@ float displayTimer = 0;                                 // Variable used in allo
 int numberOfDisplays;
 int pressTime;
 int sleepDelay = 30000;                                 // Delay before display sleeps in ms
-int displaySleep = 0;
 
 // *********** USER INPUT VARIABLES ***********
 String Unit = "B3";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
