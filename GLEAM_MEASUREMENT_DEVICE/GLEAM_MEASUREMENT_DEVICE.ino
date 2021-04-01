@@ -311,13 +311,13 @@ void updateDataStrings(String I2CSensor) {
 
   xbeeLines++;
   if(xbeeLines > 1){
-    xBeeData = xbeeData + endline + Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+    xBeeData = xbeeData + Data;
   }
   else if(xbeeLines = 1){
-    xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+    xBeeData = Data;
   }
   else{
-    xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
+    xBeeData = Data;
     xbeeLines = 0;
     serial.println("!!!!! Error with xbeeLines !!!!!");
   }
