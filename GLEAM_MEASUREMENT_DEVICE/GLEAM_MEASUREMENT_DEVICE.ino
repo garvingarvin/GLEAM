@@ -12,8 +12,8 @@
  ----------------------------------------------------------------------------------------------*/
  
 // Version Number and Date
-String version_num = "0.0.22";
-String date = "3/29/2021";
+String version_num = "0.0.23";
+String date = "3/30/2021";
 
  
 // SENSORs, SD, and I2C LIBRARIES
