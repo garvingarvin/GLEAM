@@ -12,8 +12,8 @@
  ----------------------------------------------------------------------------------------------*/
  
 // Version Number and Date
-String version_num = "0.0.21";
-String date = "3/28/2021";
+String version_num = "0.0.22";
+String date = "3/29/2021";
 
  
 // SENSORs, SD, and I2C LIBRARIES
@@ -154,6 +154,8 @@ bool xBeeHeaderSent = false;                            // Bool to allow the hea
 int display = 0;                                         // Variable that allows user to push button to change what is displayed on the OLED
 float displayTimer = 0;                                 // Variable used in allowing the OLED to display a message for a given amount of time without stopping the rest of the program
 int numberOfDisplays;
+int pressTime;
+int sleepDelay = 30000;                                 // Delay before display sleeps in ms
 
 // *********** USER INPUT VARIABLES ***********
 String Unit = "B3";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
@@ -362,7 +364,6 @@ void updateDelay() {
   {
     startTime = timeS;
     delayLength = delayFast;
-    blinkLED(2);
   }
   if((timeS - startTime) > ((fastDataTime)))
   {
