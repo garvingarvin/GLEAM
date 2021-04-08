@@ -81,6 +81,7 @@ String header;                                          // Used as first row of 
 int dataLogs = 0;                                       // Number of times data has been logged to SD card
 float setupTime;                                        // Used to start logging at t = 0 seconds
 int xbeeLines = 0;                                      // Number of lines in xbeeData string
+String xbeeData;
 
 //DELAY UPDATE VARIABLES
 int delayFast = 50;                                     // Fast data logging (ms)
@@ -311,7 +312,7 @@ void updateDataStrings(String I2CSensor) {
 
   xbeeLines++;
   if(xbeeLines > 1){
-    xBeeData = xbeeData + Data;
+    xBeeData = xbeeData + endline + Data;
   }
   else if(xbeeLines = 1){
     xBeeData = Data;
@@ -319,7 +320,7 @@ void updateDataStrings(String I2CSensor) {
   else{
     xBeeData = Data;
     xbeeLines = 0;
-    serial.println("!!!!! Error with xbeeLines !!!!!");
+    Serial.println("!!!!! Error with xbeeLines !!!!!");
   }
 
   if(I2CSensor == "VEML6070") {
