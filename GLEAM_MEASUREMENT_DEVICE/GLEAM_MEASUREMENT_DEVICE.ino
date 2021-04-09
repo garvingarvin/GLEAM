@@ -269,7 +269,7 @@ void startupProcedure() {
 void getHeader(String I2CSensor, String AnalogSensor) {
   
   header = "Unit, Time, MagX, MagY, MagZ, AccelX, AccelY, AccelZ, GyroX, GyroY, GyroZ, TempF, TempC, Photo, " + AnalogSensor + spacer;
-  xBeeHeader = String(Unit) + spacer +  "Time, TempF, TempC, Photo, " + AnalogSensor + spacer;
+  xBeeHeader = String(Unit) + spacer +  "Time, TempC, Photo, " + AnalogSensor + spacer + "MagX, MagY, MagZ, AccelX, AccelY, AccelZ, ";
   
   if(I2CSensor == "VEML6070") {
     header = header + String("VEML6070");
@@ -310,7 +310,7 @@ void updateDataStrings(String I2CSensor) {
   
   xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
   xBeeData = xBeeData + String(magnetometer[0]) + spacer + String(magnetometer[1]) + spacer + String(magnetometer[2]) + spacer;
-  xBeeData = xBeeData + String(accelerometer[0]) + spacer + String(accelerometer[1]) + spacer + String(accelerometer[2]);
+  xBeeData = xBeeData + String(accelerometer[0]) + spacer + String(accelerometer[1]) + spacer + String(accelerometer[2]) + spacer;
 
   if(I2CSensor == "VEML6070") {
     Data = Data + String(VEML6070Data);
