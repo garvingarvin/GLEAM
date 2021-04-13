@@ -1,5 +1,7 @@
 Fork created by GLEAM Team B in order to implement code improvements without affecting the main version
 
+!!! CHANGE LINES 164-167 IN GLEAM_MEASUREMENT_DEVICE !!!
+
 Changed:
 -Added version # and date on startup
 -Added function to alter delayLength based on various factors
