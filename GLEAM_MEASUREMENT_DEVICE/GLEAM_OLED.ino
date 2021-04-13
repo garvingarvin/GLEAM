@@ -63,7 +63,7 @@ void updateDisplay() {
   
   if(I2CSensorBeingUsed == "AS7262") {
     switch(display) {
-      case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+      case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "   \nLog: " + String(dataLogs) + endline +  "Sent: " + String(packetsSent) + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + endline + "Sent: " + String(packetsSent) + endline + timer);} break;
       case 1: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
       case 2: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
       case 3: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
@@ -75,7 +75,7 @@ void updateDisplay() {
   }
   else if(I2CSensorBeingUsed == "VEML6070") {
     switch(display) {
-      case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "   \nLog: " + String(dataLogs) + endline +  "Sent: " + String(packetsSent) + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + endline + "Sent: " + String(packetsSent) + endline + timer);} break;
       case 1: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
       case 2: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
       case 3: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
@@ -86,7 +86,7 @@ void updateDisplay() {
   }
     else if(I2CSensorBeingUsed == "VEML7700") {
       switch(display) {
-      case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "   \nLog: " + String(dataLogs) + endline +  "Sent: " + String(packetsSent) + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + endline + "Sent: " + String(packetsSent) + endline + timer);} break;
       case 1: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
       case 2: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
       case 3: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;
@@ -98,7 +98,7 @@ void updateDisplay() {
   }
     else if(I2CSensorBeingUsed == "SI1145") {
       switch(display) {
-      case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "\n\nLog: " + String(dataLogs) + "   " + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + "   " + endline + timer);} break;
+case 0: if (sdActive) {updateOLED("Unit: " + Unit + endline + String(filename) + "   \nLog: " + String(dataLogs) + endline +  "Sent: " + String(packetsSent) + endline + timer);} else {updateOLED("Unit: " + Unit + endline + "No/Clr SD!"+ "\nLog: " + String(dataLogs) + endline + "Sent: " + String(packetsSent) + endline + timer);} break;
       case 1: updateOLED("Temp\nFarhenheit" + String(currentTempF) + endline + "\nCelcius\n" + String(currentTempC)); break;
       case 2: updateOLED("Photo:\n" + String(PhotoresistorData) + endline + endline + "Analog:\n" + String(AnalogSensorData)); break;
       case 3: updateOLED("Mag Vals" + endline + endline + "X: " + String(magnetometer[0]) + endline + "Y: " + String(magnetometer[1]) + endline + "Z: " + String(magnetometer[2])); break;

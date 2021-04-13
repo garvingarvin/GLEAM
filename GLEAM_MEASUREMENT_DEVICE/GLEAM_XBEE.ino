@@ -7,6 +7,7 @@
  ----------------------------------------------------------------------------------------------*/
 
 void updateXBee(String text) {
+  dataSent = "";
  if(xBee.available()) {
   Serial.println("\nData request received from GUT!\n");
   xBeeString = xBee.readString();
@@ -27,6 +28,8 @@ void updateXBee(String text) {
     updateOLED("Request\nfrom CUT!\nData sent\nvia xBee\nto CUR!");
     displayTimer = millis();
     blinkLED(2);
+    dataSent = "X";
+    packetsSent++;
     }
   }
 }

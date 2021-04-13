@@ -48,6 +48,7 @@ void SDSetup(){
 
 
 void updateSD(String text) {                                
+  text = text + spacer + dataSent;
   i++;
   datalog = SD.open(filename, FILE_WRITE);
   datalog.println(text);

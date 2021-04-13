@@ -10,10 +10,12 @@
  * the data to an SD card, and send data to the Ground Unit Reciever (CUR) once a request is    |
  * detected from the Ground Unit Transmitter (CUT). Designed for a Teensy 3.5 and Teensyduino.  |
  ----------------------------------------------------------------------------------------------*/
+
+// !!!!!! CHANGE LINES 164-167 !!!!!!
  
 // Version Number and Date
-String version_num = "0.0.23";
-String date = "3/30/2021";
+String version_num = "0.1.0";
+String date = "4/13/2021";
 
  
 // SENSORs, SD, and I2C LIBRARIES
@@ -88,7 +90,7 @@ int delayLength = delayFast;                            // Delay length (in mill
 int fastDataTime = 10;                                    // Seconds from start when swtich to slow data logging occurs
 float accelPrev[3];                                       //Stores the previous accelerometer values for comparison
 int startTime;                                            // Time of inital accelerometer disturbance
-double accelTolerance = .05;                             // Amount accel data needs to change (in Gs) to increase data recording rate
+double accelTolerance = .1;                             // Amount accel data needs to change (in Gs) to increase data recording rate
 
 // IMU VARIABLES
 float magnetometer[3];                                  // Three element array for holding magnetometer values in x, y, z directions, respectively
@@ -148,6 +150,8 @@ String xBeeString;                                      // String to throw away 
 String xBeeHeader;                                      // Header string to be sent via the xBee to the GUR
 String xBeeData;                                        // Data string to be sent via the xBee to the GUR
 bool xBeeHeaderSent = false;                            // Bool to allow the header to only be sent 1 time
+int packetsSent = 0;                                    // Number of packets sent to reciever%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+String dataSent = "";                                 // Will display 'X' on SD if that data was sent%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 // OLED VARIABLES
 int display = 0;                                         // Variable that allows user to push button to change what is displayed on the OLED
@@ -157,9 +161,9 @@ int pressTime;
 int sleepDelay = 30000;                                 // Delay before display sleeps in ms
 
 // *********** USER INPUT VARIABLES ***********
-String Unit = "B3";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
-String I2CSensorBeingUsed = "VEML7700";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
-String AnalogSensorBeingUsed = "GUVA-S12SD";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
+String Unit = ;                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
+String I2CSensorBeingUsed = ;                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
+String AnalogSensorBeingUsed = ;            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
 int ledsONorOFF = 1;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
 
 
@@ -187,8 +191,8 @@ void loop() {
   updateAnalogSensor();
   updateI2CSensor(I2CSensorBeingUsed);
   updateDataStrings(I2CSensorBeingUsed);
-  updateSD(Data);
   updateXBee(xBeeData);
+  updateSD(Data);
   updateDisplay();
   delay(delayLength);
   updateDelay();
@@ -262,6 +266,7 @@ void startupProcedure() {
   delay(delayTime);
 
   setupTime = millis();
+  pressTime = millis();
 }
 
 
@@ -296,6 +301,7 @@ void getHeader(String I2CSensor, String AnalogSensor) {
     Serial.println("Exiting program!");
     while(1) {}
   }
+  header = header + spacer + "Sent to Xbee";
 }
 
 
@@ -354,6 +360,7 @@ void updateDelay() {
   {
     startTime = timeS;
     delayLength = delayFast;
+    pressTime = millis();
   }
   if((timeS - startTime) > ((fastDataTime)))
   {
