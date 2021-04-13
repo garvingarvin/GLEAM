@@ -17,21 +17,11 @@ void IMUSetup() {
     updateOLED("IMU\nonline!");
     delay(500);
   }
-  
-accelerometer[0] = 500;
-accelerometer[1] = 500;
-accelerometer[2] = 500;
-
 }
 
 
 void updateIMU() {
 
-  accelPrev[0] = accelerometer[0];
-  accelPrev[1] = accelerometer[1];
-  accelPrev[2] = accelerometer[2];
-
-  
   if (imu.magAvailable()) imu.readMag();
   if (imu.accelAvailable()) imu.readAccel();
   if (imu.gyroAvailable()) imu.readGyro();

@@ -3,19 +3,14 @@
  * AEM 4490 - Introduction to Aerospace Topics                                                  |
  * GLEAM Project - Measurement Device                                                           |
  * Author: Joe Poeppel - poepp027@umn.edu                                                       |
- * Edited By Team B                                                                             |
+ * Date: 2/25/2021                                                                              |
  *                                                                                              | 
  * XBee Series 3 Mesh Network: Measurement Device for GLEAM Project                             |
  * This software is to be placed on the measurement units that are to collect data, log         |
- * the data to an SD card, and send data to the Ground Unit Reciever (CUR) once a request is    |
- * detected from the Ground Unit Transmitter (CUT). Designed for a Teensy 3.5 and Teensyduino.  |
+ * the data to an SD card, and send data to the Ground Unit Reciever (GUR) once a request is    |
+ * detected from the Ground Unit Transmitter (GUT).                                             |
  ----------------------------------------------------------------------------------------------*/
- 
-// Version Number and Date
-String version_num = "0.0.23";
-String date = "3/30/2021";
-
- 
+ ///NOT GITHUB
 // SENSORs, SD, and I2C LIBRARIES
 #include <Wire.h>                                       // I2C  library                    - Should already be on your computer as a part of the IDE download
 #include <SPI.h>                                        // SPI  library                    - Should already be on your computer as a part of the IDE download
@@ -76,19 +71,10 @@ String spacer = ", ";                                   // Used to make creating
 String endline = "\n";                                  // Used to make creating Data and SDData strings quicker and more organized 
 String delimiter = "Q";                                 // Used to make creating Data and SDData strings quicker and more organized - delimiter must be an uppercase 'E' in order for the GUR to properly read your data
 String timer;                                           // Hours/Minutes/Seconds
-double timeS;                                               // Time in s
 String header;                                          // Used as first row of .csv file to distinguish logged data
+int delayLength = 0;                                    // Delay length (in milliseconds) between each main loop iteration
 int dataLogs = 0;                                       // Number of times data has been logged to SD card
 float setupTime;                                        // Used to start logging at t = 0 seconds
-
-//DELAY UPDATE VARIABLES
-int delayFast = 50;                                     // Fast data logging (ms)
-int delaySlow = 500;                                   // Slow data logging (ms)
-int delayLength = delayFast;                            // Delay length (in milliseconds) between each main loop iteration
-int fastDataTime = 10;                                    // Seconds from start when swtich to slow data logging occurs
-float accelPrev[3];                                       //Stores the previous accelerometer values for comparison
-int startTime;                                            // Time of inital accelerometer disturbance
-double accelTolerance = .05;                             // Amount accel data needs to change (in Gs) to increase data recording rate
 
 // IMU VARIABLES
 float magnetometer[3];                                  // Three element array for holding magnetometer values in x, y, z directions, respectively
@@ -147,20 +133,18 @@ float SI1145UV;
 String xBeeString;                                      // String to throw away incoming data request ("!") from transmitter 
 String xBeeHeader;                                      // Header string to be sent via the xBee to the GUR
 String xBeeData;                                        // Data string to be sent via the xBee to the GUR
-bool xBeeHeaderSent = false;                            // Bool to allow the header to only be sent 1 time
+bool xBeeHeaderSent = false;                            // Bool to allow the header to only be sent once
 
 // OLED VARIABLES
 int display = 0;                                         // Variable that allows user to push button to change what is displayed on the OLED
 float displayTimer = 0;                                 // Variable used in allowing the OLED to display a message for a given amount of time without stopping the rest of the program
 int numberOfDisplays;
-int pressTime;
-int sleepDelay = 30000;                                 // Delay before display sleeps in ms
 
 // *********** USER INPUT VARIABLES ***********
-String Unit = "B3";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
-String I2CSensorBeingUsed = "VEML7700";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
+String Unit = "B4";                                     // *** MUST CHANGE THIS TO YOUR ASSIGNED UNIT (A1, A2, ..., A5; B1, B2, ..., B5; C1, C2, ..., C5; D1, D2, ..., D5)
+String I2CSensorBeingUsed = "AS7262";                   // *** MUST CHANGE THIS TO YOUR ASSIGNED I2C SENSOR ("VEML6070", "VEML7700", "AS7262", "SI1145")
 String AnalogSensorBeingUsed = "GUVA-S12SD";            // *** MUST CHANGE THIS TO YOUR ASSIGNED ANALOG SENSOR ("GUVA-S12SD", "ALS-PT19")
-int ledsONorOFF = 1;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
+int ledsONorOFF = 0;                                    // *** Set = 1 to enable LEDs; Set = 0 to disable LEDs
 
 
 // SETUP FUNCTION
@@ -180,6 +164,7 @@ void setup() {
 
 
 void loop() {
+  
   updateTimer();
   updateIMU();
   updateThermistor();
@@ -191,7 +176,6 @@ void loop() {
   updateXBee(xBeeData);
   updateDisplay();
   delay(delayLength);
-  updateDelay();
   
 }
 
@@ -269,7 +253,7 @@ void startupProcedure() {
 void getHeader(String I2CSensor, String AnalogSensor) {
   
   header = "Unit, Time, MagX, MagY, MagZ, AccelX, AccelY, AccelZ, GyroX, GyroY, GyroZ, TempF, TempC, Photo, " + AnalogSensor + spacer;
-  xBeeHeader = String(Unit) + spacer +  "Time, TempC, Photo, " + AnalogSensor + spacer + "MagX, MagY, MagZ, AccelX, AccelY, AccelZ, ";
+  xBeeHeader = String(Unit) + spacer +  "Time, TempF, TempC, Photo, " + AnalogSensor + spacer;
   
   if(I2CSensor == "VEML6070") {
     header = header + String("VEML6070");
@@ -308,9 +292,7 @@ void updateDataStrings(String I2CSensor) {
   Data = Data + String(currentTempF) + spacer + String(currentTempC) + spacer;
   Data = Data + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
   
-  xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
-  xBeeData = xBeeData + String(magnetometer[0]) + spacer + String(magnetometer[1]) + spacer + String(magnetometer[2]) + spacer;
-  xBeeData = xBeeData + String(accelerometer[0]) + spacer + String(accelerometer[1]) + spacer + String(accelerometer[2]) + spacer;
+  xBeeData = Unit + spacer + String((millis() - setupTime)/1000) + spacer + String(currentTempF) + spacer + String(currentTempC) + spacer + String(PhotoresistorData) + spacer + String(AnalogSensorData) + spacer;
 
   if(I2CSensor == "VEML6070") {
     Data = Data + String(VEML6070Data);
@@ -333,33 +315,23 @@ void updateDataStrings(String I2CSensor) {
     Serial.println("Exiting program!");
     updateOLED("Error!\n\nExiting\nprogram!");
     while(1) {}
-  }                  
+  }
+
+  if(xBeeHeaderSent == true){                                                   //checks if data sent, if so adds "Sent Data!" to string to SD @@@@@@@@@@@
+    Data = Data + spacer + "Data Sent!";  
+  }
 }
 
 
 void updateTimer() {
-  timeS = (millis() - setupTime)/1000;                                     // Time we are converting
-  int hr = timeS/3600;                                                         // Number of hours
-  int mins = (timeS-hr*3600)/60;                                               // Remove the number of hours and calculate the minutes.
-  int sec = timeS-hr*3600-mins*60;                                            // Remove the number of hours and minutes, leaving only seconds.
+  int time = (millis() - setupTime)/1000;                                     // Time we are converting
+  int hr = time/3600;                                                         // Number of hours
+  int mins = (time-hr*3600)/60;                                               // Remove the number of hours and calculate the minutes.
+  int sec = time-hr*3600-mins*60;                                            // Remove the number of hours and minutes, leaving only seconds.
   timer = (String(hr) + ":" + String(mins) + ":" + String(sec));             // Converts to HH:MM:SS string
-  if(sec < 10)
-  {
-    timer = (String(hr) + ":" + String(mins) + ":0" + String(sec));
-  }
 }
 
-void updateDelay() {
-  if(abs(accelPrev[0]-accelerometer[0]) > accelTolerance || abs(accelPrev[1]-accelerometer[1]) > accelTolerance || abs(accelPrev[2]-accelerometer[2]) > accelTolerance)
-  {
-    startTime = timeS;
-    delayLength = delayFast;
-  }
-  if((timeS - startTime) > ((fastDataTime)))
-  {
-    delayLength = delaySlow;
-  }
-}
+
 
 
 

@@ -5,7 +5,6 @@
  * Author: Joe Poeppel - poepp027@umn.edu                                                       |
  * Date: 2/25/2021                                                                              |                                     
  ----------------------------------------------------------------------------------------------*/
-int i = 0;
 
 void SDSetup(){
   pinMode(chipSelect, OUTPUT);
@@ -48,13 +47,10 @@ void SDSetup(){
 
 
 void updateSD(String text) {                                
-  i++;
   datalog = SD.open(filename, FILE_WRITE);
   datalog.println(text);
   datalog.close();
-  if(i % 5 == 0) {
-    blinkLED(1);
-  }
+  blinkLED(1);
   dataLogs++;
   Serial.println(text);
 }

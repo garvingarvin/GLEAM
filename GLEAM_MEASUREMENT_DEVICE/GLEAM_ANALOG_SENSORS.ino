@@ -5,6 +5,8 @@
  * Author: Joe Poeppel - poepp027@umn.edu                                                       |
  * Date: 2/25/2021                                                                              |                                          
  ----------------------------------------------------------------------------------------------*/
+#define VIN 3.3 // voltage @@@8
+#define R 10000 // omhs @@@
 
 void updateThermistor() {
   analogReadResolution(analogResolutionBits);
@@ -16,10 +18,12 @@ void updateThermistor() {
   currentTempF = currentTempC * 9 / 5 + 32;
 }
 
+
+
 void updatePhotoresistor() {
-  PhotoresistorData = analogRead(PHOTO);                // May need proper formula to get useful values -- otherwise will just see varying analog values
+  PhotoresistorData =500/(((R*(VIN-(analogRead(PHOTO)*(3.3/16384.0))))/(analogRead(PHOTO)*(3.3/16384.0)))/1000);                // Formula for analog to voltage to resistance to lumen@@@@@@@@@@@@@@
 }
 
 void updateAnalogSensor() {
-  AnalogSensorData = analogRead(ANALOGSENSOR);          // May need proper formula to get useful values -- otherwise will just see varying analog values
+  AnalogSensorData = (analogRead(ANALOGSENSOR)*(3.3/16384.0))/0.1;          // in analog to voltage to UV index@@@@@@@@@@@@@@@@@@@@@@
 }
